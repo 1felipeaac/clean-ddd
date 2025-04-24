@@ -4,7 +4,7 @@ export class Entity<Props> {
   private _id: UniqueEntityID
   protected props: Props
 
-  getId() {
+  get id() {
     return this._id
   }
 
