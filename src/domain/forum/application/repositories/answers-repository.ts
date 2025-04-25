@@ -1,5 +1,7 @@
-import { Answer } from '@/domain/forum/enterprise/entities/answer'
+import { Answer } from "@/domain/forum/enterprise/entities/answer";
 
-export interface AnswerRepository {
-  create(answer: Answer): Promise<void>
+export interface AnswersRepository {
+  findById(id: string): Promise<Answer | null>;
+  create(answer: Answer): Promise<void>;
+  delete(answerId: Answer): Promise<void>;
 }
