@@ -20,15 +20,14 @@ describe('Get Question By Slug', () => {
 
     // console.log("question: " + JSON.stringify(inMemoryQuestionsRepository.items[0]))
       
-    const {question} = await sut.execute({
+    const result = await sut.execute({
       slug: 'nova-pergunta'
     })
 
-  
-    if (question) {
-      expect(question.id).toBeTruthy()
-      expect(question.title).toEqual(newQuestion.title)
-    }
+    expect(result.isRight()).toBe(true)
+    expect(result.value.question.id).toBeTruthy()
+    expect(result.value.question.title).toEqual(newQuestion.title)
+
   })
 
 })

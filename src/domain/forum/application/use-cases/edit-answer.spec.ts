@@ -1,8 +1,8 @@
 import { InMemoryAnswersRepository } from 'test/in-memory-answers-repository'
-import { Slug } from '../../enterprise/entities/value-objects/slug'
 import { makeAnswer } from 'test/factories/make-answer'
 import { EditAnswersUseCase } from './edit-answer'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 let inMemoryAnswersRepository: InMemoryAnswersRepository
 //system under test
@@ -40,14 +40,15 @@ describe('Edit Answer', () => {
     const answer = makeAnswer({authorId: new UniqueEntityID('author-1')}, new UniqueEntityID('answer-1'))
 
     inMemoryAnswersRepository.create(answer)
-      
-    await expect(() => {
-      return sut.execute({
-        answerId: answer.id.toValue(), 
-        authorId: 'author-2',
-        content: 'Conteudo teste',
+
+    const result = await sut.execute({
+      answerId: answer.id.toValue(), 
+      authorId: 'author-2',
+      content: 'Conteudo teste',
     })
-    }).rejects.toBeInstanceOf(Error)
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
 
   })
 

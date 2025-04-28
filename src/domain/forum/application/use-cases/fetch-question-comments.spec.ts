@@ -1,5 +1,3 @@
-import { FetchQuestionAnswersUseCase } from './fetch-question-answer'
-import { makeAnswer } from 'test/factories/make-answer'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryQuestionCommentsRepository } from 'test/in-memory-question-comments-repository'
 import { makeQuestionComment } from 'test/factories/make-question-comment'
@@ -20,9 +18,12 @@ describe('Fecth Question Comments', () => {
     await inMemoryQuestionCommentsRepository.create(makeQuestionComment({questionId: new UniqueEntityID('question-1')}))
     await inMemoryQuestionCommentsRepository.create(makeQuestionComment({questionId: new UniqueEntityID('question-1')}))
 
-    const {questionComments} = await sut.execute({questionId: 'question-1',page: 1})
+    const {value} = await sut.execute({questionId: 'question-1',page: 1})
 
-    expect(questionComments).toHaveLength(3)
+    if(value){
+      expect(value.questionComments).toHaveLength(3)
+    }
+
   })
   it('should be able to fetch recent question comments', async () => {
     for(let i = 1; i <= 22; i++){
@@ -30,9 +31,11 @@ describe('Fecth Question Comments', () => {
 
     }
 
-    const {questionComments} = await sut.execute({questionId: 'question-1', page: 2})
+    const {value} = await sut.execute({questionId: 'question-1', page: 2})
 
-    expect(questionComments).toHaveLength(2)
+    if(value){
+      expect(value.questionComments).toHaveLength(2)
+    }
   })
 })
 

@@ -20,15 +20,15 @@ describe('Comment on answer', () => {
 
     await inMemoryAnswersRepository.create(answer)
   
-    if (answer) {
-      await sut.execute({
-        answerId: answer.id.toString(),
-        authorId: answer.authorId.toString(),
-        content: 'Comentário da Questão'
-      })
+    const result = await sut.execute({
+      answerId: answer.id.toString(),
+      authorId: answer.authorId.toString(),
+      content: 'Comentário da Questão'
+    })
 
-      expect(inMemoryAnswerCommentsRepository.items[0].content).toEqual('Comentário da Questão')
-    }
+    expect(result.isRight()).toBe(true)
+    expect(inMemoryAnswerCommentsRepository.items[0].content).toEqual('Comentário da Questão')
+    
   })
 
 })

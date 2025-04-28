@@ -18,9 +18,9 @@ describe('Fecth Question Answers', () => {
     await inMemoryAnswersRepository.create(makeAnswer({questionId: new UniqueEntityID('question-1')}))
     await inMemoryAnswersRepository.create(makeAnswer({questionId: new UniqueEntityID('question-1')}))
 
-    const {answers} = await sut.execute({questionId: 'question-1',page: 1})
+    const {value} = await sut.execute({questionId: 'question-1',page: 1})
 
-    expect(answers).toHaveLength(3)
+    expect(value?.answers).toHaveLength(3)
   })
   it('should be able to fetch recent question answers', async () => {
     for(let i = 1; i <= 22; i++){
@@ -28,9 +28,12 @@ describe('Fecth Question Answers', () => {
 
     }
 
-    const {answers} = await sut.execute({questionId: 'question-1', page: 2})
+    const {value} = await sut.execute({questionId: 'question-1', page: 2})
 
-    expect(answers).toHaveLength(2)
+    if(value){
+      expect(value.answers).toHaveLength(2)
+    }
+
   })
 })
 

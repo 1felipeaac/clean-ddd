@@ -2,6 +2,8 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { AnswerComment } from '../../enterprise/entities/answer-comment'
 import { AnswerCommentsRepository } from '../repositories/answer-comments-repository'
+import { Either, left, right } from '@/core/either'
+import { NotAllowedError } from './errors/not-allowed-error'
 
 interface CommentOnAnswersUseCaseRequest {
   authorId: string,
@@ -9,9 +11,9 @@ interface CommentOnAnswersUseCaseRequest {
   content: string
 }
 
-interface CommentOnAnswerUseCaseResponse {
+type CommentOnAnswerUseCaseResponse = Either<NotAllowedError, {
     answerComment: AnswerComment
-}
+}>
 
 export class CommentOnAnswersUseCase {
   constructor(
@@ -26,7 +28,7 @@ export class CommentOnAnswersUseCase {
     const answer = await this.answerRepository.findById(answerId)
 
     if(!answer){
-        throw new Error('Answer Not Found')
+      return left(new NotAllowedError())
     }
 
     const answerComment = AnswerComment.create({
@@ -37,6 +39,6 @@ export class CommentOnAnswersUseCase {
 
     await this.answerCommentsRepository.create(answerComment)
 
-    return {answerComment}
+    return right({answerComment})
   }
 }
