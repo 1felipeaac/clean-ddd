@@ -8,7 +8,7 @@ export function makeQuestion(
     id?: UniqueEntityID
     ){
     const question = Question.create({
-        authorId: new UniqueEntityID('1'),
+        authorId: new UniqueEntityID(),
         title: faker.lorem.sentence(),
         slug: Slug.create('nova-pergunta'),
         content: faker.lorem.text(),

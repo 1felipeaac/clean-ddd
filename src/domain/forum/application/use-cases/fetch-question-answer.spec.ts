@@ -1,6 +1,4 @@
 import { InMemoryAnswersRepository } from 'test/in-memory-answers-repository'
-import { GetQuestionBySlugUseCase } from './get-question-by-slug'
-
 import { FetchQuestionAnswersUseCase } from './fetch-question-answer'
 import { makeAnswer } from 'test/factories/make-answer'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
