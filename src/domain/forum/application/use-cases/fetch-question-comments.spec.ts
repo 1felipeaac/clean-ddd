@@ -18,11 +18,9 @@ describe('Fecth Question Comments', () => {
     await inMemoryQuestionCommentsRepository.create(makeQuestionComment({questionId: new UniqueEntityID('question-1')}))
     await inMemoryQuestionCommentsRepository.create(makeQuestionComment({questionId: new UniqueEntityID('question-1')}))
 
-    const {value} = await sut.execute({questionId: 'question-1',page: 1})
+    const result = await sut.execute({questionId: 'question-1',page: 1})
 
-    if(value){
-      expect(value.questionComments).toHaveLength(3)
-    }
+    expect(result.value?.questionComments).toHaveLength(3)
 
   })
   it('should be able to fetch recent question comments', async () => {
@@ -31,11 +29,9 @@ describe('Fecth Question Comments', () => {
 
     }
 
-    const {value} = await sut.execute({questionId: 'question-1', page: 2})
+    const result = await sut.execute({questionId: 'question-1', page: 2})
 
-    if(value){
-      expect(value.questionComments).toHaveLength(2)
-    }
+    expect(result.value?.questionComments).toHaveLength(2)
   })
 })
 

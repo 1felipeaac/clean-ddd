@@ -24,9 +24,8 @@ describe('Get Question By Slug', () => {
       slug: 'nova-pergunta'
     })
 
-    expect(result.isRight()).toBe(true)
-    expect(result.value.question.id).toBeTruthy()
-    expect(result.value.question.title).toEqual(newQuestion.title)
+    expect(result.value?.question.id).toBeTruthy()
+    expect(result.value?.question.title).toEqual(newQuestion.title)
 
   })
 

@@ -3,11 +3,16 @@ import { Answer } from "../../enterprise/entities/answer";
 import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 import { NotAllowedError } from "./errors/not-allowed-error";
 import { Either, left, right } from "@/core/either";
+import { AnswerAttachmentList } from "../../enterprise/entities/answer-attachment-list";
+import { AnswerAttachment } from "../../enterprise/entities/answer-attachment";
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { AnswerAttachmentsRepository } from "../repositories/answer-attachments-repository";
 
 interface EditAnswersUseCaseRequest {
   authorId: string;
   answerId: string;
   content: string
+  attachmentsIds: string[]
 }
 
 type EditAnswerUseCaseResponse = Either<ResourceNotFoundError | NotAllowedError,{
@@ -15,11 +20,15 @@ type EditAnswerUseCaseResponse = Either<ResourceNotFoundError | NotAllowedError,
 }>
 
 export class EditAnswersUseCase {
-  constructor(private answerRepository: AnswersRepository) {}
+  constructor(
+    private answerRepository: AnswersRepository,
+    private answerAttachmentsRepository: AnswerAttachmentsRepository
+    ) {}
   async execute({
     answerId,
     authorId, 
     content,
+    attachmentsIds
   }: EditAnswersUseCaseRequest): Promise<EditAnswerUseCaseResponse> {
     const answer = await this.answerRepository.findById(answerId);
 
@@ -31,6 +40,20 @@ export class EditAnswersUseCase {
       return left(new NotAllowedError())
     }
 
+    const currentQuestionAttachments = await this.answerAttachmentsRepository.findManyByAnswerId(answerId)
+
+    const questionAttachmentList = new AnswerAttachmentList(currentQuestionAttachments)
+
+    const questionAttachments = attachmentsIds.map((attachmentId) => {
+      return AnswerAttachment.create({
+        attachmentId: new UniqueEntityID(attachmentId),
+        answerId: answer.id
+      })
+    })
+
+    questionAttachmentList.update(questionAttachments)
+
+    answer.attachments = questionAttachmentList
     answer.content = content
 
     await this.answerRepository.save(answer);
