@@ -1,14 +1,17 @@
 import { InMemoryQuestionsRepository } from 'test/in-memory-questions-repository'
 import { makeQuestion } from 'test/factories/make-question'
 import { FecthRecentQuestionUseCase } from './fetch-recent-questions'
+import { InMemoryQuestionAttachmentsRepository } from 'test/in-memory-question-attachments-repository'
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository
+let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
 //system under test
 let sut: FecthRecentQuestionUseCase
 
 describe('Fecth Recent Questions', () => {
   beforeEach(() => {
-    inMemoryQuestionsRepository = new InMemoryQuestionsRepository()
+    inMemoryQuestionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository()
+    inMemoryQuestionsRepository = new InMemoryQuestionsRepository(inMemoryQuestionAttachmentsRepository)
     sut = new FecthRecentQuestionUseCase(inMemoryQuestionsRepository)
   })
 
@@ -24,13 +27,6 @@ describe('Fecth Recent Questions', () => {
       expect.objectContaining({createdAt: new Date(2025, 3, 24)}),
       expect.objectContaining({createdAt: new Date(2025, 3, 23)}),])
 
-    // if(value){
-    //   expect(value.questions).toEqual([
-    //     expect.objectContaining({createdAt: new Date(2025, 3, 25)}),
-    //     expect.objectContaining({createdAt: new Date(2025, 3, 24)}),
-    //     expect.objectContaining({createdAt: new Date(2025, 3, 23)}),
-    //   ])
-    // }
 
   })
   it('should be able to fetch recent paginated questions', async () => {
@@ -42,10 +38,6 @@ describe('Fecth Recent Questions', () => {
     const result = await sut.execute({page: 2})
 
     expect(result.value?.questions).toHaveLength(2)
-
-    // if(value){
-    //   expect(value.questions).toHaveLength(2)
-    // }
 
   })
 })
